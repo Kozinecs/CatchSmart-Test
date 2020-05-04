@@ -2,7 +2,7 @@
   <div class="card">
     <div class="date">
       <span>{{moment(item.date).fromNow()}}</span>
-      <button v-on:click="$emit('removeItem')">remove</button>
+      <button @click.stop="$emit('deleteCard')">&#10006;</button>
     </div>
     <h2>{{item.title}}</h2>
     <p>{{item.content}}</p>
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+import moment from "moment";
 
 export default {
   props: {
@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       moment: moment
-    }
+    };
   }
 };
 </script>
@@ -42,22 +42,42 @@ export default {
   position: relative;
   z-index: 1;
   user-select: none;
+  h2 {
+    margin-bottom: 0px;
+  }
   &:hover {
     box-shadow: 2px 0px 25px 0px rgba(0, 0, 0, 0.2);
     transition: 0.3s ease-out;
-    .date {
-      button {
-        display: flex;
-      }
-    }
   }
   .date {
+    height: 30px;
     display: flex;
+    align-items: center;
     position: relative;
     z-index: 2;
     justify-content: space-between;
     button {
-      display: none;
+      display: flex;
+      border: none;
+      background: none;
+      outline: none;
+      color: #f1f1f1;
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 30px;
+    }
+    span {
+      line-height: 30px;
+    }
+  }
+  .badge {
+    margin-top: auto;
+    span {
+      padding: 4px 8px;
+      background-color: #845ec2;
+      color: rgb(219, 219, 219);
+      border-radius: 16px;
+      margin-right: 8px;
     }
   }
 }

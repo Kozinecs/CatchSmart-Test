@@ -5,14 +5,22 @@
       :key="index"
       :item="item"
       :id="index"
-      v-on:click.native.self="openModal(item, index)"
-      v-on:removeItem="removeItem(index)"
+      @click.native="openEditCardDialog(index)"
+      @deleteCard="deleteCard(index)"
     />
-    <button @click="addCard">Add Card</button>
-    <modal v-if="showModal" v-on:toggle-modal="toggleModal" :item="clickedCard" :id="clickedId" v-on:saveNewCard="saveNewCard"/>
+    <button @click="openAddNewCardDialog">Add Card</button>
+    <modal
+      v-if="showModal"
+      :modalTitle="modalTitle"
+      :modalContent="modalContent"
+      :modalTags="modalTags"
+      :modalId="modalId"
+      @addCard="addCard"
+      @updateCard="updateCard"
+      @toggleModal="toggleModal"
+    />
   </div>
 </template>
-
 <script>
 import Card from "@/components/Card";
 import Modal from "@/components/Modal";
@@ -24,24 +32,13 @@ export default {
   },
   data() {
     return {
-      cardList: [
-        {
-          date: "24/04/2020",
-          title: "Some text here",
-          content: "Some content goes here",
-          tags: ["work", "home"]
-        },
-        {
-          date: "25/04/2020",
-          title: "Some bla bla",
-          content: "Some content goes here asd asd asd asd ",
-          tags: ["work", "home"]
-        }
-      ],
-      clickedCard: {},
-      clickedId: Number,
+      cardList: [],
       showModal: false,
-      newCard: null
+      modalTitle: "",
+      modalContent: "",
+      modalCardId: null,
+      modalTags: [],
+      modalId: null
     };
   },
   mounted() {
@@ -54,30 +51,63 @@ export default {
     }
   },
   methods: {
-    openModal(item, index) {
-      console.log(item, index);
-      this.clickedCard = item;
-      this.clickedId = index;
-      this.showModal = !this.showModal;
-    },
-    removeItem(index) {
-      this.cardList.splice(index, 1);
-      this.saveCard();
-    },
     toggleModal() {
-      console.log("toggle modal");
       this.showModal = !this.showModal;
     },
 
-    addCard() {
-      event.preventDefault();
-      this.openModal({}, this.cardList.length + 1);
+    openAddNewCardDialog() {
+      console.log("test");
+      this.showModal = true;
+      this.modalTitle = "";
+      this.modalContent = "";
+      this.modalTags = [];
+      this.modalCardId = null;
     },
-    saveNewCard(card) {
-      this.newCard = card;
-      this.cardList.push(this.newCard);
+
+    openEditCardDialog(cardId) {
+      this.showModal = true;
+      this.modalTitle = this.cardList[cardId].title;
+      this.modalContent = this.cardList[cardId].content;
+      this.modalTags = this.cardList[cardId].tags;
+      this.modalId = cardId;
+      this.modalCardId = cardId;
+    },
+
+    addCard(title, content, tags) {
+      if (
+        title !== "" ||
+        content !== "" ||
+        tags.length !== 0
+      ) {
+        this.cardList.unshift({ date, title, content, tags });
+      }
+      let date = new Date();
+
       this.saveCard();
     },
+
+    deleteCard(cardId) {
+      this.showModal = false;
+      this.cardList.splice(cardId, 1);
+      this.saveCard();
+    },
+
+    updateCard(cardId, title, content, tags) {
+      console.log("tags in updat", tags);
+      let date = new Date();
+
+      let card = {
+        date: date,
+        title: title,
+        content: content,
+        tags: tags
+      };
+
+      this.cardList.splice(cardId, 1);
+      this.cardList.unshift(card);
+      this.saveCard();
+    },
+
     saveCard() {
       let parsed = JSON.stringify(this.cardList);
       localStorage.setItem("cardList", parsed);
@@ -95,5 +125,36 @@ export default {
   grid-template-columns: repeat(4, 1fr);
   column-gap: 40px;
   row-gap: 40px;
+  button {
+    cursor: pointer;
+    align-self: center;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    border: none;
+    max-height: 35px;
+    outline: none;
+    background: none;
+    width: fit-content;
+    padding: 8px 16px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid #5c5c5c;
+    border-radius: 10px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .card-grid {
+    grid-template-columns: repeat(1, 1fr);
+    margin-left: 31px;
+    margin-right: 31px;
+  }
 }
 </style>
