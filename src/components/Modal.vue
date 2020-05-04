@@ -22,7 +22,7 @@
     </div>
   </div>
 </template>
-
+ 
 <script>
 export default {
   props: {
@@ -33,7 +33,6 @@ export default {
   },
   data() {
     return {
-      new: false,
       currentItem: {},
       currentId: null,
       title: "",
@@ -43,13 +42,11 @@ export default {
   },
   methods: {
     save() {
-      console.log(this.modalTags.length);
-      console.log(this.tags.length);
       if (
-        this.modalTitle === "" &&
-        this.modalContent === "" &&
-        this.modalCardId === undefined &&
-        this.modalTags.length === 0
+        this.modalTitle &&
+        this.modalContent &&
+        this.modalCardId &&
+        this.modalTags.length
       ) {
         this.$emit("addCard", this.title, this.content, this.tags);
       } else if (
@@ -66,13 +63,6 @@ export default {
         );
       }
       this.$emit("toggleModal");
-    },
-
-    isEmpty(obj) {
-      for (var key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) return false;
-      }
-      return true;
     }
   },
   created() {
@@ -82,7 +72,7 @@ export default {
   }
 };
 </script>
-
+ 
 <style lang="scss" scoped>
 .modal {
   display: flex;

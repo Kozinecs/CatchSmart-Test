@@ -36,16 +36,16 @@ export default {
       showModal: false,
       modalTitle: "",
       modalContent: "",
-      modalCardId: null,
       modalTags: [],
       modalId: null
     };
   },
-  mounted() {
+  created() {
     if (localStorage.getItem("cardList")) {
       try {
         this.cardList = JSON.parse(localStorage.getItem("cardList"));
       } catch (e) {
+        console.log(e);
         localStorage.removeItem("cardList");
       }
     }
@@ -56,12 +56,10 @@ export default {
     },
 
     openAddNewCardDialog() {
-      console.log("test");
       this.showModal = true;
       this.modalTitle = "";
       this.modalContent = "";
       this.modalTags = [];
-      this.modalCardId = null;
     },
 
     openEditCardDialog(cardId) {
@@ -70,34 +68,25 @@ export default {
       this.modalContent = this.cardList[cardId].content;
       this.modalTags = this.cardList[cardId].tags;
       this.modalId = cardId;
-      this.modalCardId = cardId;
     },
 
     addCard(title, content, tags) {
-      if (
-        title !== "" ||
-        content !== "" ||
-        tags.length !== 0
-      ) {
-        this.cardList.unshift({ date, title, content, tags });
+      if (title || content || tags.length) {
+        this.cardList.unshift({ date: new Date(), title, content, tags });
       }
-      let date = new Date();
 
-      this.saveCard();
+      this.saveLocalStoreCardList();
     },
 
     deleteCard(cardId) {
       this.showModal = false;
       this.cardList.splice(cardId, 1);
-      this.saveCard();
+      this.saveLocalStoreCardList();
     },
 
     updateCard(cardId, title, content, tags) {
-      console.log("tags in updat", tags);
-      let date = new Date();
-
       let card = {
-        date: date,
+        date: new Date(),
         title: title,
         content: content,
         tags: tags
@@ -105,17 +94,17 @@ export default {
 
       this.cardList.splice(cardId, 1);
       this.cardList.unshift(card);
-      this.saveCard();
+      this.saveLocalStoreCardList();
     },
 
-    saveCard() {
+    saveLocalStoreCardList() {
       let parsed = JSON.stringify(this.cardList);
       localStorage.setItem("cardList", parsed);
     }
   }
 };
 </script>
-
+ 
 <style lang="scss" scoped>
 .card-grid {
   margin-left: auto;

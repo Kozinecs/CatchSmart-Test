@@ -11,7 +11,7 @@
     </div>
   </div>
 </template>
-
+ 
 <script>
 import moment from "moment";
 
@@ -22,12 +22,12 @@ export default {
   },
   data() {
     return {
-      moment: moment
+      moment
     };
   }
 };
 </script>
-
+ 
 <style lang="scss" scoped>
 .card {
   cursor: pointer;
@@ -48,6 +48,11 @@ export default {
   &:hover {
     box-shadow: 2px 0px 25px 0px rgba(0, 0, 0, 0.2);
     transition: 0.3s ease-out;
+    .date {
+      button {
+        display: flex;
+      }
+    }
   }
   .date {
     height: 30px;
@@ -57,11 +62,11 @@ export default {
     z-index: 2;
     justify-content: space-between;
     button {
-      display: flex;
+      display: none;
       border: none;
       background: none;
       outline: none;
-      color: #f1f1f1;
+      color: #c50909;
       cursor: pointer;
       font-size: 20px;
       line-height: 30px;
@@ -78,6 +83,16 @@ export default {
       color: rgb(219, 219, 219);
       border-radius: 16px;
       margin-right: 8px;
+    }
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .card {
+    .date {
+      button {
+        display: flex;
+      }
     }
   }
 }

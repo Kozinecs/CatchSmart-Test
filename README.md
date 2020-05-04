@@ -1,4 +1,4 @@
-# interview
+# CatchSmart Test
 
 ## Project setup
 ```
